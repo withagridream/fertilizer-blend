@@ -24,9 +24,7 @@ async function initAuth() {
 
 async function verifyToken(token) {
   try {
-    const res = await fetch(`${AUTH_URL}/verify`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
+    const res = await fetch(`${AUTH_URL}/verify?t=${encodeURIComponent(token)}`);
     const data = await res.json();
     return data.valid === true;
   } catch {
