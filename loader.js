@@ -1,9 +1,19 @@
-const AUTH_URL = 'https://with-agri-dream.duckdns.org';
-const CACHE_KEY_DATA = 'cached_data_js';
-const CACHE_KEY_APP  = 'cached_app_js';
-const TOKEN_KEY      = 'auth_token';
+const AUTH_URL    = 'https://with-agri-dream.duckdns.org';
+const LOGIN_URL   = `${AUTH_URL}/login`;
+const TOKEN_KEY   = 'auth_token';
+const CACHE_DATA  = 'cached_data_js';
+const CACHE_APP   = 'cached_app_js';
 
 document.addEventListener('DOMContentLoaded', () => {
+  // リダイレクト後のトークンをURLハッシュから取得
+  const hash = window.location.hash;
+  if (hash.startsWith('#token=')) {
+    const token = hash.slice(7);
+    localStorage.setItem(TOKEN_KEY, token);
+    // URLからトークンを消す
+    history.replaceState(null, '', window.location.pathname);
+  }
+
   initAuth();
 });
 
@@ -19,12 +29,13 @@ async function initAuth() {
     clearCache();
   }
 
-  showAuthScreen();
+  // 未認証：ラズパイのログインページへリダイレクト
+  window.location.href = LOGIN_URL;
 }
 
 async function verifyToken(token) {
   try {
-    const res = await fetch(`${AUTH_URL}/verify?t=${encodeURIComponent(token)}`);
+    const res  = await fetch(`${AUTH_URL}/verify?t=${encodeURIComponent(token)}`);
     const data = await res.json();
     return data.valid === true;
   } catch {
@@ -34,18 +45,16 @@ async function verifyToken(token) {
 
 function clearCache() {
   localStorage.removeItem(TOKEN_KEY);
-  localStorage.removeItem(CACHE_KEY_DATA);
-  localStorage.removeItem(CACHE_KEY_APP);
+  localStorage.removeItem(CACHE_DATA);
+  localStorage.removeItem(CACHE_APP);
 }
 
-// JSを動的にロード（Blob URL経由）
 async function loadApp(token) {
   try {
-    let dataJs = localStorage.getItem(CACHE_KEY_DATA);
-    let appJs  = localStorage.getItem(CACHE_KEY_APP);
+    let dataJs = localStorage.getItem(CACHE_DATA);
+    let appJs  = localStorage.getItem(CACHE_APP);
 
     if (!dataJs || !appJs) {
-      // ラズパイからJSファイルを取得（プリフライト回避のためURLパラメータでトークン渡す）
       const [dataRes, appRes] = await Promise.all([
         fetch(`${AUTH_URL}/protected/data.js?t=${encodeURIComponent(token)}`),
         fetch(`${AUTH_URL}/protected/app.js?t=${encodeURIComponent(token)}`)
@@ -53,28 +62,24 @@ async function loadApp(token) {
 
       if (!dataRes.ok || !appRes.ok) {
         clearCache();
-        showAuthScreen();
+        window.location.href = LOGIN_URL;
         return;
       }
 
       dataJs = await dataRes.text();
       appJs  = await appRes.text();
-
-      localStorage.setItem(CACHE_KEY_DATA, dataJs);
-      localStorage.setItem(CACHE_KEY_APP, appJs);
+      localStorage.setItem(CACHE_DATA, dataJs);
+      localStorage.setItem(CACHE_APP, appJs);
     }
 
-    // Blob URLで動的に実行（順番に読み込む）
     await execScript(dataJs);
     await execScript(appJs);
-
-    // DOMContentLoadedは再発火しないため直接初期化
     renderAlwaysDanger();
     showDisclaimer();
 
   } catch {
     clearCache();
-    showAuthScreen();
+    window.location.href = LOGIN_URL;
   }
 }
 
@@ -83,57 +88,9 @@ function execScript(code) {
     const blob = new Blob([code], { type: 'application/javascript' });
     const url  = URL.createObjectURL(blob);
     const el   = document.createElement('script');
-    el.src = url;
-    el.onload = () => { URL.revokeObjectURL(url); resolve(); };
+    el.src     = url;
+    el.onload  = () => { URL.revokeObjectURL(url); resolve(); };
     el.onerror = reject;
     document.head.appendChild(el);
   });
-}
-
-function showAuthScreen() {
-  const screen = document.getElementById('auth-screen');
-  screen.hidden = false;
-
-  const btn   = document.getElementById('auth-btn');
-  const input = document.getElementById('auth-password');
-  const errEl = document.getElementById('auth-error');
-
-  const doLogin = async () => {
-    const pw = input.value.trim();
-    if (!pw) return;
-
-    btn.disabled = true;
-    btn.textContent = '確認中...';
-    errEl.hidden = true;
-
-    try {
-      const res  = await fetch(`${AUTH_URL}/auth`, {
-        method:  'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body:    `password=${encodeURIComponent(pw)}`
-      });
-      const data = await res.json();
-
-      if (res.ok && data.token) {
-        localStorage.setItem(TOKEN_KEY, data.token);
-        screen.hidden = true;
-        await loadApp(data.token);
-      } else {
-        errEl.textContent = 'パスワードが正しくありません';
-        errEl.hidden = false;
-        btn.disabled = false;
-        btn.textContent = 'ログイン';
-        input.value = '';
-        input.focus();
-      }
-    } catch {
-      errEl.textContent = 'サーバーに接続できません。時間をおいて再試行してください。';
-      errEl.hidden = false;
-      btn.disabled = false;
-      btn.textContent = 'ログイン';
-    }
-  };
-
-  btn.addEventListener('click', doLogin);
-  input.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
 }
