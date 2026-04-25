@@ -105,8 +105,8 @@ function showAuthScreen() {
     try {
       const res  = await fetch(`${AUTH_URL}/auth`, {
         method:  'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body:    JSON.stringify({ password: pw })
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body:    `password=${encodeURIComponent(pw)}`
       });
       const data = await res.json();
 
