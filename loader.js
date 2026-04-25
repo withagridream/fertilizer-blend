@@ -72,8 +72,8 @@ async function loadApp(token) {
       localStorage.setItem(CACHE_APP, appJs);
     }
 
-    await execScript(dataJs);
-    await execScript(appJs);
+    execScript(dataJs);
+    execScript(appJs);
     renderAlwaysDanger();
     showDisclaimer();
 
@@ -84,13 +84,7 @@ async function loadApp(token) {
 }
 
 function execScript(code) {
-  return new Promise((resolve, reject) => {
-    const blob = new Blob([code], { type: 'application/javascript' });
-    const url  = URL.createObjectURL(blob);
-    const el   = document.createElement('script');
-    el.src     = url;
-    el.onload  = () => { URL.revokeObjectURL(url); resolve(); };
-    el.onerror = reject;
-    document.head.appendChild(el);
-  });
+  const el = document.createElement('script');
+  el.textContent = code;
+  document.head.appendChild(el);
 }
