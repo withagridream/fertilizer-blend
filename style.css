@@ -1,0 +1,787 @@
+:root {
+  --green:  #2e7d32;
+  --green-light: #e8f5e9;
+  --orange: #e65100;
+  --bg:     #fafafa;
+  --card:   #ffffff;
+  --text:   #212121;
+  --sub:    #616161;
+  --border: #e0e0e0;
+  --radius: 12px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+[hidden] { display: none !important; }
+
+button {
+  -webkit-appearance: none;
+  appearance: none;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+body {
+  font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* ヘッダー */
+header {
+  background: var(--green);
+  color: #fff;
+  padding: 20px 16px 16px;
+  text-align: center;
+}
+
+header h1 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+header p {
+  font-size: 0.85rem;
+  opacity: 0.85;
+}
+
+/* メインコンテナ */
+main {
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px 12px 60px;
+}
+
+/* セクション共通 */
+.step-section {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 1px 4px rgba(0,0,0,.08);
+}
+
+.step-section h2 {
+  font-size: 0.95rem;
+  color: var(--green);
+  font-weight: 700;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.step-section h2::before {
+  content: attr(data-step);
+  background: var(--green);
+  color: #fff;
+  border-radius: 50%;
+  width: 22px;
+  height: 22px;
+  font-size: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* 月ボタングリッド */
+.month-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.month-btn {
+  background: var(--green-light);
+  border: 2px solid transparent;
+  border-radius: 8px;
+  padding: 8px 4px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--green);
+  cursor: pointer;
+  transition: all .15s;
+  text-align: center;
+}
+
+.month-btn:hover {
+  border-color: var(--green);
+}
+
+.month-btn.active {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}
+
+/* 月メモ */
+#month-note {
+  font-size: 0.82rem;
+  color: var(--sub);
+  margin-bottom: 12px;
+  padding: 8px 10px;
+  background: var(--green-light);
+  border-radius: 8px;
+  border-left: 3px solid var(--green);
+}
+
+/* 野菜ボタン */
+#veg-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.veg-btn {
+  background: #fff;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all .15s;
+  text-align: left;
+}
+
+.veg-btn:hover {
+  border-color: var(--green);
+  background: var(--green-light);
+}
+
+.veg-btn.active {
+  border-color: var(--green);
+  background: var(--green-light);
+  font-weight: 700;
+  color: var(--green);
+}
+
+
+
+/* ステージボタン */
+#stage-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stage-btn {
+  background: #fff;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all .15s;
+}
+
+.stage-btn:hover {
+  border-color: var(--orange);
+  background: #fff3e0;
+}
+
+.stage-btn.active {
+  border-color: var(--orange);
+  background: #fff3e0;
+  font-weight: 700;
+  color: var(--orange);
+}
+
+/* 結果パネル */
+#result-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  color: var(--green);
+}
+
+/* N-P-K バー */
+.npk-section {
+  margin-bottom: 16px;
+}
+
+.npk-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.npk-header h3 {
+  font-size: 0.9rem;
+  color: var(--sub);
+  font-weight: 600;
+}
+
+#npk-badge {
+  font-size: 0.78rem;
+  background: var(--green-light);
+  color: var(--green);
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-weight: 700;
+}
+
+.npk-row {
+  margin-bottom: 10px;
+}
+
+.npk-label {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.npk-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.npk-desc {
+  font-size: 0.75rem;
+  color: var(--sub);
+}
+
+.npk-bar-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f5f5f5;
+  border-radius: 20px;
+  height: 24px;
+  overflow: visible;
+  position: relative;
+}
+
+.npk-bar {
+  height: 100%;
+  border-radius: 20px;
+  min-width: 8px;
+  transition: width .4s ease;
+}
+
+.npk-value {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+/* アドバイス */
+.tip-box {
+  background: #fffde7;
+  border-left: 3px solid #f9a825;
+  border-radius: 0 8px 8px 0;
+  padding: 10px 12px;
+  font-size: 0.88rem;
+  margin-bottom: 16px;
+  color: #5d4037;
+}
+
+/* 市販品・ドラッグストア */
+.info-block {
+  margin-bottom: 14px;
+}
+
+.info-block h3 {
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--text);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.info-block ul {
+  list-style: none;
+  padding: 0;
+}
+
+.info-block ul li {
+  font-size: 0.85rem;
+  padding: 7px 10px;
+  background: #f5f5f5;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  color: var(--text);
+}
+
+.info-block ul li::before {
+  content: '•';
+  color: var(--green);
+  font-weight: 700;
+  margin-right: 6px;
+}
+
+/* 防虫対策 */
+.pest-item {
+  background: #fce4ec;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
+.pest-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #b71c1c;
+  margin-bottom: 4px;
+}
+
+.pest-timing {
+  font-weight: 400;
+  font-size: 0.8rem;
+  color: #c62828;
+}
+
+.pest-measure {
+  font-size: 0.83rem;
+  color: #4e342e;
+}
+
+/* フッター */
+footer {
+  background: #f5f5f5;
+  border-top: 1px solid var(--border);
+  padding: 16px;
+  font-size: 0.75rem;
+  color: var(--sub);
+  text-align: center;
+  line-height: 1.8;
+}
+
+footer a {
+  color: var(--green);
+  text-decoration: none;
+}
+
+footer .disclaimer {
+  background: #fff3e0;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  color: #e65100;
+  font-size: 0.78rem;
+}
+
+/* 認証画面 */
+#auth-screen {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  padding: 16px;
+}
+
+#auth-box {
+  background: #fff;
+  border-radius: 14px;
+  padding: 32px 24px;
+  max-width: 400px;
+  width: 100%;
+}
+
+#auth-box h1 {
+  font-size: 1.1rem;
+  color: var(--green);
+  margin-bottom: 6px;
+}
+
+.auth-lead {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--sub);
+  margin-bottom: 12px;
+}
+
+.auth-desc {
+  font-size: 0.83rem;
+  color: var(--text);
+  margin-bottom: 20px;
+  line-height: 1.7;
+}
+
+.auth-field {
+  margin-bottom: 12px;
+}
+
+.auth-field input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color .15s;
+}
+
+.auth-field input:focus {
+  border-color: var(--green);
+}
+
+#auth-error {
+  font-size: 0.83rem;
+  color: #b71c1c;
+  background: #ffebee;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+}
+
+#auth-btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background: var(--green);
+  color: #fff;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+}
+
+#auth-btn:hover {
+  background: #1b5e20;
+}
+
+#auth-btn:disabled {
+  background: #9e9e9e;
+  cursor: not-allowed;
+}
+
+/* 免責・同意画面 */
+#disclaimer-screen {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+#disclaimer-box {
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px 20px;
+  max-width: 560px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+#disclaimer-box h1 {
+  font-size: 1.1rem;
+  color: var(--green);
+  margin-bottom: 6px;
+}
+
+.disclaimer-lead {
+  font-size: 0.85rem;
+  color: var(--sub);
+  margin-bottom: 16px;
+  font-weight: 600;
+}
+
+.disclaimer-body h2 {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 14px 0 6px;
+  padding-left: 8px;
+  border-left: 3px solid var(--green);
+}
+
+.disclaimer-body p {
+  font-size: 0.83rem;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.7;
+}
+
+.disclaimer-body ul {
+  list-style: none;
+  margin-bottom: 10px;
+}
+
+.disclaimer-body ul li {
+  font-size: 0.83rem;
+  color: var(--text);
+  padding: 4px 0 4px 14px;
+  position: relative;
+  line-height: 1.6;
+}
+
+.disclaimer-body ul li::before {
+  content: '・';
+  position: absolute;
+  left: 0;
+  color: var(--sub);
+}
+
+#agree-btn {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+  padding: 14px;
+  background: var(--green);
+  color: #fff;
+  border-radius: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+}
+
+#agree-btn:hover {
+  background: #1b5e20;
+}
+
+.disclaimer-note {
+  font-size: 0.75rem;
+  color: var(--sub);
+  text-align: center;
+  margin-top: 10px;
+}
+
+/* 防虫道具リスト */
+.pest-tools-header {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--sub);
+  margin: 14px 0 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+
+.pest-tool-item {
+  background: #f9fbe7;
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+}
+
+.pest-tool-name {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 3px;
+}
+
+.pest-tool-usage {
+  font-size: 0.8rem;
+  color: #4e342e;
+  margin-bottom: 3px;
+  line-height: 1.6;
+}
+
+.pest-tool-where {
+  font-size: 0.78rem;
+  color: var(--green);
+  font-weight: 600;
+}
+
+/* アイコン共通 */
+.section-icon {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+.inline-icon {
+  width: 18px;
+  height: 18px;
+  vertical-align: middle;
+  margin-right: 5px;
+  flex-shrink: 0;
+}
+
+/* 常時表示：絶対混用禁止 */
+.always-danger-section {
+  border: 2px solid #b71c1c;
+}
+
+.always-danger-note {
+  font-size: 0.82rem;
+  color: #b71c1c;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+.danger-combo {
+  background: #ffebee;
+  border-left: 4px solid #b71c1c;
+  border-radius: 0 8px 8px 0;
+  padding: 8px 12px;
+  margin-bottom: 6px;
+  font-size: 0.83rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.danger-combo-name {
+  display: block;
+  font-weight: 700;
+  color: #b71c1c;
+  margin-bottom: 2px;
+  flex: 1;
+}
+
+.danger-combo-risk {
+  font-size: 0.78rem;
+  color: #c62828;
+}
+
+/* 結果内警告 */
+.warning-section-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #e65100;
+  margin: 16px 0 10px;
+}
+
+.warning-item {
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin-bottom: 8px;
+}
+
+.warning-danger {
+  background: #ffebee;
+  border: 2px solid #b71c1c;
+}
+
+.warning-caution {
+  background: #fff8e1;
+  border: 2px solid #f9a825;
+}
+
+.warning-title {
+  font-size: 0.88rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+  color: #212121;
+}
+
+.warning-danger .warning-title { color: #b71c1c; }
+.warning-caution .warning-title { color: #e65100; }
+
+.warning-body {
+  font-size: 0.82rem;
+  line-height: 1.7;
+  color: #4e342e;
+}
+
+/* h2の step="!" 対応 */
+.always-danger-section h2::before {
+  content: '!';
+  background: #b71c1c;
+}
+
+/* 相性セクション */
+.companion-section-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text);
+  margin: 16px 0 6px;
+}
+
+.companion-note {
+  font-size: 0.78rem;
+  color: var(--sub);
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.companion-group {
+  margin-bottom: 12px;
+}
+
+.companion-group-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.companion-label-good {
+  background: #e8f5e9;
+  color: #2e7d32;
+}
+
+.companion-label-bad {
+  background: #ffebee;
+  color: #c62828;
+}
+
+.companion-item {
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+}
+
+.companion-good-item {
+  background: #f1f8e9;
+  border-left: 3px solid #2e7d32;
+}
+
+.companion-bad-item {
+  background: #fff3e0;
+  border-left: 3px solid #e65100;
+}
+
+.companion-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 4px;
+}
+
+.companion-partner {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.companion-reason {
+  font-size: 0.82rem;
+  color: #4e342e;
+  line-height: 1.7;
+  padding-left: 24px;
+}
+
+/* レスポンシブ */
+@media (max-width: 400px) {
+  .month-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  header h1 {
+    font-size: 1.1rem;
+  }
+}

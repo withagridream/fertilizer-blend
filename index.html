@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>家庭菜園 肥料ブレンドガイド</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- 認証画面 -->
+<div id="auth-screen">
+  <div id="auth-box">
+    <h1>家庭菜園 肥料ブレンドガイド</h1>
+    <p class="auth-lead">ご購入者専用ツールです</p>
+    <p class="auth-desc">noteでご購入いただいた方のみご利用いただけます。<br>購入後にお知らせするパスワードを入力してください。</p>
+    <div class="auth-field">
+      <input type="password" id="auth-password" placeholder="パスワードを入力" autocomplete="current-password">
+    </div>
+    <div id="auth-error" hidden></div>
+    <button id="auth-btn">ログイン</button>
+  </div>
+</div>
+
+<!-- 免責・同意画面 -->
+<div id="disclaimer-screen">
+  <div id="disclaimer-box">
+    <h1>家庭菜園 肥料ブレンドガイド</h1>
+    <p class="disclaimer-lead">ご利用前に以下をお読みください</p>
+
+    <div class="disclaimer-body">
+      <h2>このアプリについて</h2>
+      <p>本アプリは<strong>家庭菜園を楽しむ個人の方</strong>を対象とした参考情報ツールです。</p>
+
+      <h2>対象外の方</h2>
+      <ul>
+        <li>農家・農業経営者の方</li>
+        <li>業務用・商業栽培での使用を検討されている方</li>
+        <li>専門的な農業指導を必要とされている方</li>
+      </ul>
+      <p>上記の方は、農業試験場・JA・農業改良普及センターなど専門機関にご相談ください。</p>
+
+      <h2>免責事項</h2>
+      <ul>
+        <li>本アプリの情報は参考値です。地域・土壌・気候・品種により結果は異なります</li>
+        <li>肥料・防虫資材の使用による損害について、制作者は責任を負いません</li>
+        <li>化合物の混用は必ず表示の注意事項を守ってください</li>
+        <li>体調不良・中毒症状が出た場合はすぐに医療機関を受診してください</li>
+      </ul>
+    </div>
+
+    <button id="agree-btn">上記に同意して使い始める</button>
+    <p class="disclaimer-note">同意いただけない場合はこのページを閉じてください</p>
+  </div>
+</div>
+
+<div id="app-body" hidden>
+<header>
+  <h1>家庭菜園 肥料ブレンドガイド</h1>
+  <p>種まきの月・野菜・生育ステージを選ぶだけで<br>最適な肥料と防虫対策がわかる</p>
+</header>
+
+<main>
+
+  <!-- 常時表示：絶対に混ぜてはいけない組み合わせ -->
+  <section class="step-section always-danger-section">
+    <h2 style="color:#b71c1c;" data-step="!"><img src="icons/ban.svg" class="section-icon"> 絶対に混ぜてはいけない組み合わせ</h2>
+    <p class="always-danger-note">以下の組み合わせは有害ガスの発生・重大な事故につながります。どの野菜・どのステージでも共通です。</p>
+    <div id="always-danger-list"></div>
+  </section>
+
+  <!-- STEP 1: 月選択 -->
+  <section class="step-section" id="step-month">
+    <h2 data-step="1">種まきの月を選ぼう</h2>
+    <div class="month-grid">
+      <button class="month-btn" data-month="1">1月</button>
+      <button class="month-btn" data-month="2">2月</button>
+      <button class="month-btn" data-month="3">3月</button>
+      <button class="month-btn" data-month="4">4月</button>
+      <button class="month-btn" data-month="5">5月</button>
+      <button class="month-btn" data-month="6">6月</button>
+      <button class="month-btn" data-month="7">7月</button>
+      <button class="month-btn" data-month="8">8月</button>
+      <button class="month-btn" data-month="9">9月</button>
+      <button class="month-btn" data-month="10">10月</button>
+      <button class="month-btn" data-month="11">11月</button>
+      <button class="month-btn" data-month="12">12月</button>
+    </div>
+  </section>
+
+  <!-- STEP 2: 野菜選択 -->
+  <section class="step-section" id="step-veg" hidden>
+    <h2 data-step="2">育てる野菜を選ぼう</h2>
+    <p id="month-note"></p>
+    <div id="veg-list"></div>
+  </section>
+
+  <!-- STEP 3: ステージ選択 -->
+  <section class="step-section" id="step-stage" hidden>
+    <h2 data-step="3">今の生育ステージは？</h2>
+    <div id="stage-list"></div>
+  </section>
+
+  <!-- 結果 -->
+  <section class="step-section" id="step-result" hidden>
+    <div id="result-title"></div>
+
+    <!-- N-P-K -->
+    <div class="npk-section">
+      <div class="npk-header">
+        <h3>推奨 N-P-K 比率</h3>
+        <span id="npk-badge"></span>
+      </div>
+      <div id="npk-bars"></div>
+    </div>
+
+    <!-- アドバイス -->
+    <div class="tip-box" id="result-tip"></div>
+
+    <!-- 市販品 -->
+    <div class="info-block">
+      <h3><img src="icons/shop.svg" class="section-icon"> ホームセンターで買える肥料</h3>
+      <ul id="product-list"></ul>
+    </div>
+
+    <!-- ドラッグストア代替 -->
+    <div class="info-block">
+      <h3><img src="icons/drug.svg" class="section-icon"> ドラッグストア・スーパーで代替できるもの</h3>
+      <ul id="drugstore-list"></ul>
+    </div>
+
+    <!-- 相性情報 -->
+    <section id="companion-section" hidden>
+      <h3 class="companion-section-title">隣に植える野菜との相性</h3>
+      <p class="companion-note">同時期に同じ配合の肥料を使うことによる土壌への影響・コンパニオンプランツ効果を含みます。</p>
+      <div class="companion-group">
+        <div class="companion-group-label companion-label-good">相性の良い組み合わせ</div>
+        <div id="companion-good"></div>
+      </div>
+      <div class="companion-group">
+        <div class="companion-group-label companion-label-bad">避けた方が良い組み合わせ</div>
+        <div id="companion-bad"></div>
+      </div>
+    </section>
+
+    <!-- 混用警告（自動表示） -->
+    <section id="warning-section" hidden>
+      <h3 class="warning-section-title"><img src="icons/caution.svg" class="section-icon"> この提案に含まれる使用上の注意</h3>
+      <div id="warning-list"></div>
+    </section>
+
+    <!-- 防虫対策 -->
+    <div class="info-block">
+      <h3><img src="icons/shield.svg" class="section-icon"> この野菜の防虫対策</h3>
+      <div id="pest-list"></div>
+      <div class="pest-tools-header">よく使う防虫道具と入手先</div>
+      <div id="pest-tools-list"></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="disclaimer">
+    本ツールの数値は家庭菜園向けの参考値です。地域・土壌・気候・品種によって異なります。
+    実際の栽培には現地の状態に合わせてご調整ください。
+  </div>
+  参考文献：
+  <a href="https://www.maff.go.jp/j/seisan/kankyo/hozen_type/h_sehi_kizyun/" target="_blank" rel="noopener">農林水産省 作物別施肥基準</a>　／
+  <a href="https://www.takii.co.jp/tsk/y_garden/" target="_blank" rel="noopener">タキイ種苗 山田式家庭菜園教室</a>　／
+  <a href="https://www.shuminoengei.jp/" target="_blank" rel="noopener">NHK みんなの趣味の園芸</a>
+  <br>
+  © 農民になれないITおじさん
+</footer>
+
+</div><!-- /#app-body -->
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
