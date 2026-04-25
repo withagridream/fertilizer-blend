@@ -281,6 +281,14 @@ main {
   white-space: nowrap;
 }
 
+/* NPK補足注記 */
+#npk-note {
+  font-size: 0.75rem;
+  color: var(--sub);
+  margin-top: 8px;
+  line-height: 1.6;
+}
+
 /* アドバイス */
 .tip-box {
   background: #fffde7;
