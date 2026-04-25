@@ -67,9 +67,13 @@ async function loadApp(token) {
       localStorage.setItem(CACHE_KEY_APP, appJs);
     }
 
-    // Blob URLで動的に実行
-    execScript(dataJs);
-    execScript(appJs);
+    // Blob URLで動的に実行（順番に読み込む）
+    await execScript(dataJs);
+    await execScript(appJs);
+
+    // DOMContentLoadedは再発火しないため直接初期化
+    renderAlwaysDanger();
+    showDisclaimer();
 
   } catch {
     clearCache();
@@ -78,12 +82,15 @@ async function loadApp(token) {
 }
 
 function execScript(code) {
-  const blob = new Blob([code], { type: 'application/javascript' });
-  const url  = URL.createObjectURL(blob);
-  const el   = document.createElement('script');
-  el.src = url;
-  el.onload = () => URL.revokeObjectURL(url);
-  document.head.appendChild(el);
+  return new Promise((resolve, reject) => {
+    const blob = new Blob([code], { type: 'application/javascript' });
+    const url  = URL.createObjectURL(blob);
+    const el   = document.createElement('script');
+    el.src = url;
+    el.onload = () => { URL.revokeObjectURL(url); resolve(); };
+    el.onerror = reject;
+    document.head.appendChild(el);
+  });
 }
 
 function showAuthScreen() {
