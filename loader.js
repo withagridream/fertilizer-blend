@@ -47,11 +47,10 @@ async function loadApp(token) {
     let appJs  = localStorage.getItem(CACHE_KEY_APP);
 
     if (!dataJs || !appJs) {
-      // ラズパイからJSファイルを取得
-      const headers = { 'Authorization': `Bearer ${token}` };
+      // ラズパイからJSファイルを取得（プリフライト回避のためURLパラメータでトークン渡す）
       const [dataRes, appRes] = await Promise.all([
-        fetch(`${AUTH_URL}/protected/data.js`, { headers }),
-        fetch(`${AUTH_URL}/protected/app.js`,  { headers })
+        fetch(`${AUTH_URL}/protected/data.js?t=${encodeURIComponent(token)}`),
+        fetch(`${AUTH_URL}/protected/app.js?t=${encodeURIComponent(token)}`)
       ]);
 
       if (!dataRes.ok || !appRes.ok) {
