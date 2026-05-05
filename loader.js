@@ -1,4 +1,4 @@
-const AUTH_URL    = 'https://with-agri-dream.duckdns.org';
+const AUTH_URL    = 'https://withagridream.com';
 const LOGIN_URL   = `${AUTH_URL}/login`;
 const TOKEN_KEY   = 'auth_token';
 const CACHE_DATA  = 'cached_data_js';
